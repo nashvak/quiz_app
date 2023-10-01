@@ -1,11 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app/utilities/questions/dummy_questions.dart';
 
-class QuestionScreen extends StatelessWidget {
-  QuestionScreen({super.key});
-  final currentQuestion = questions[0];
+class QuestionScreen extends StatefulWidget {
+  const QuestionScreen({super.key});
+
+  @override
+  State<QuestionScreen> createState() => _QuestionScreenState();
+}
+
+class _QuestionScreenState extends State<QuestionScreen> {
+  var currentQuestionIndex = 0;
+  answerQuestion() {
+    setState(() {
+      currentQuestionIndex++;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final currentQuestion = questions[currentQuestionIndex];
     return SizedBox(
       width: double.infinity,
       child: Container(
@@ -22,8 +35,15 @@ class QuestionScreen extends StatelessWidget {
             const SizedBox(
               height: 30,
             ),
-            ...currentQuestion.answers
-                .map((answer) => AnswerButton(answerText: answer, onTap: () {}))
+
+            // convert the list of values into list of widgets,
+            //spread operator is used to convert the list of widgets to individual values
+            ...currentQuestion.getshuffledAnswers().map(
+                  (answer) => AnswerButton(
+                    answerText: answer,
+                    onTap: answerQuestion,
+                  ),
+                ),
           ],
         ),
       ),
@@ -48,7 +68,10 @@ class AnswerButton extends StatelessWidget {
         ),
       ),
       onPressed: onTap,
-      child: Text(answerText),
+      child: Text(
+        answerText,
+        textAlign: TextAlign.center,
+      ),
     );
   }
 }
